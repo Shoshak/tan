@@ -22,6 +22,8 @@ extern "C" {
 #include <lualib.h>
 }
 
+#include "meta/video.cpp"
+
 static int l_get(lua_State *L) {
   std::string path = luaL_checkstring(L, 1);
 
@@ -194,16 +196,20 @@ int main() {
   lua_State *L = luaL_newstate();
   luaL_openlibs(L);
 
-  static const struct luaL_Reg tan[] = {{"get", l_get},
-                                        {"getrec", l_getrec},
-                                        {"listen", l_listen},
-                                        {"register", l_register},
-                                        {"unregister", l_unregister},
-                                        {NULL, NULL}};
+  luaL_newlib(L, video::video_meta);
+  lua_setglobal(L, "video");
 
-  luaL_newlib(L, tan);
+  static const struct luaL_Reg fns[] = {
+    {"get", l_get},
+    {"getrec", l_getrec},
+    {"listen", l_listen},
+    {"register", l_register},
+    {"unregister", l_unregister},
+    {NULL, NULL}
+  };
+
+  luaL_newlib(L, fns);
   lua_setglobal(L, "tan");
-
   fileWatcher->watch();
 
   if (luaL_dofile(L, lua_init.c_str()) != LUA_OK) {
