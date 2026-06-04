@@ -4,6 +4,7 @@ extern "C" {
 #include <lualib.h>
 }
 
+#include "action.cpp"
 #include "lib.cpp"
 
 #ifdef ENABLE_VIDEO
@@ -36,10 +37,13 @@ int main() {
   luaL_newlib(L, tan::lib);
   lua_setglobal(L, "tan");
 
-  #ifdef ENABLE_VIDEO
+  luaL_newlib(L, action::lib);
+  lua_setglobal(L, "action");
+
+#ifdef ENABLE_VIDEO
   luaL_newlib(L, video::video_meta);
   lua_setglobal(L, "video");
-  #endif
+#endif
 
   luaL_newlib(L, file::file_meta);
   lua_setglobal(L, "file");
