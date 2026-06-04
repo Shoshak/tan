@@ -25,6 +25,7 @@ extern "C" {
 #ifdef ENABLE_VIDEO
 #include "meta/video.cpp"
 #endif
+#include "meta/file.cpp"
 
 static int l_get(lua_State *L) {
   std::string path = luaL_checkstring(L, 1);
@@ -202,6 +203,9 @@ int main() {
   luaL_newlib(L, video::video_meta);
   lua_setglobal(L, "video");
   #endif
+
+  luaL_newlib(L, file::file_meta);
+  lua_setglobal(L, "file");
 
   static const struct luaL_Reg fns[] = {
     {"get", l_get},
